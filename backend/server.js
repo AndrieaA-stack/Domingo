@@ -1,3 +1,6 @@
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -85,14 +88,14 @@ app.get("/api/profile", async (req, res) => {
   }
 });
 
+// Port Binding (Runs immediately so Render doesn't exit early)
 const PORT = process.env.PORT || 5000;
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log("MongoDB connected.");
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.error("MongoDB connection failed:", error);
-  });
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Database Connection
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("MongoDB connected successfully."))
+  .catch((error) => console.error("MongoDB connection failed:", error.message));
